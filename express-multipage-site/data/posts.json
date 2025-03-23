@@ -1,10 +1,10 @@
 [
     {
-        "title": "First Blog Post",
-        "content": "This is the content of the first blog post."
+        "title": "Post 1",
+        "content": "Content for the first post."
     },
     {
-        "title": "Second Blog Post",
-        "content": "Another post with some interesting content."
+        "title": "Post 2",
+        "content": "Content for the second post."
     }
 ]
