@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <title>Blog</title>
     <script>
-        async function loadBlogPosts() {
+        document.addEventListener('DOMContentLoaded', async function () {
             try {
-                let response = await fetch('/blog-posts'); // Fetch JSON data
+                let response = await fetch('/blog-posts');
                 let posts = await response.json();
 
                 let container = document.getElementById('blog-container');
@@ -24,10 +24,8 @@
                 console.error("Error loading blog posts:", error);
                 document.getElementById('blog-container').innerHTML = "<p>Error loading posts.</p>";
             }
-        }
-        window.onload = loadBlogPosts;
+        });
     </script>
-
 
     <link rel="stylesheet" href="/style.css">
 

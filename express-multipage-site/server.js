@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const filePath = path.join(__dirname, 'data', 'posts.json');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -13,7 +14,6 @@ app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'views', 'abou
 app.get('/contact', (req, res) => res.sendFile(path.join(__dirname, 'views', 'contact.html')));
 
 app.get('/blog-posts', (req, res) => {
-    const filePath = path.join(__dirname, 'data', 'posts.json');
     console.log("Attempting to read file at:", filePath);
 
     fs.readFile(filePath, 'utf8', (err, data) => {
