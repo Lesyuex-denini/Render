@@ -3,6 +3,8 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(express.static('public'));
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -18,6 +20,19 @@ app.get('/contact', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'contact.html'));
 });
 
+app.get('/blog', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'blog.html'));
+});
+
+app.get('/api/posts', (req, res) => {
+    fs.readFile(path.join(__dirname, 'data', 'posts.json'), 'utf8', (err, data) => {
+        if (err) {
+            res.status(500).json({ error: 'Failed to load posts' });
+        } else {
+            res.json(JSON.parse(data));
+        }
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
