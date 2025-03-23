@@ -3,8 +3,6 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(express.static('public'));
-
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -20,16 +18,23 @@ app.get('/contact', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'contact.html'));
 });
 
-app.get('/blog', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'blog.html'));
-});
+const fs = require('fs');
 
-app.get('/api/posts', (req, res) => {
-    fs.readFile(path.join(__dirname, 'data', 'posts.json'), 'utf8', (err, data) => {
+app.get('/blog', (req, res) => {
+    fs.readFile('./data/posts.json', 'utf8', (err, data) => {
         if (err) {
-            res.status(500).json({ error: 'Failed to load posts' });
-        } else {
-            res.json(JSON.parse(data));
+            return res.status(500).send("Error loading blog posts");
+        }
+        try {
+            const posts = JSON.parse(data);
+            let html = '<h1>Blog Page</h1><ul>';
+            posts.forEach(post => {
+                html += `<li><h2>${post.title}</h2><p>${post.content}</p></li>`;
+            });
+            html += '</ul>';
+            res.send(html);
+        } catch (parseError) {
+            res.status(500).send("Error parsing blog data");
         }
     });
 });
