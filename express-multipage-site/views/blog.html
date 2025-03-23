@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <title>Blog</title>
     <script>
-        async function loadBlogPosts() {
+        // Wait for DOMContentLoaded to ensure the DOM is ready
+        document.addEventListener('DOMContentLoaded', async function () {
             try {
-                let response = await fetch('/api/blog-posts'); // Fetch from the correct API
+                let response = await fetch('/blog-posts'); // Fetch JSON data
                 let posts = await response.json();
 
                 let container = document.getElementById('blog-container');
@@ -24,9 +25,9 @@
                 console.error("Error loading blog posts:", error);
                 document.getElementById('blog-container').innerHTML = "<p>Error loading posts.</p>";
             }
-        }
-        window.onload = loadBlogPosts;
+        });
     </script>
+
     <style>
         .blog-post {
             border: 1px solid #ddd;
@@ -42,7 +43,7 @@
 </head>
 
 <body>
-    <h1>Got questions?</h1>
+    <h1>See it for Yourself</h1>
     <nav>
         <a href="/">Home</a>
         <a href="/about">About</a>
