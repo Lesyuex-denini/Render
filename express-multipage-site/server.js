@@ -5,67 +5,60 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the 'public' directory
+// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json()); // Allows JSON request handling
 
 // Routes for HTML pages
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'views', 'index.html')));
+app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'views', 'about.html')));
+app.get('/contact', (req, res) => res.sendFile(path.join(__dirname, 'views', 'contact.html')));
+app.get('/blog', (req, res) => res.sendFile(path.join(__dirname, 'views', 'blog.html')));
 
-app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'about.html'));
-});
-
-app.get('/contact', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'contact.html'));
-});
-
-// Blog route - dynamically loads posts from JSON
-app.get('/blog', (req, res) => {
+// API route to fetch blog posts (returns JSON)
+app.get('/api/blog-posts', (req, res) => {
     const filePath = path.join(__dirname, 'data', 'posts.json');
 
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
-            console.error("Error reading blog posts:", err);
-            return res.status(500).send("Error loading blog posts.");
+            console.error("❌ Error reading blog posts:", err);
+            return res.status(500).json({ error: "Error loading blog posts." });
         }
 
         try {
             const posts = JSON.parse(data);
-            let html = `
-                <html>
-                <head>
-                    <title>Blog Page</title>
-                    <link rel="stylesheet" href="/styles.css">
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        h1 { text-align: center; color: #333; }
-                        .blog-post { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
-                        .blog-post h2 { color: #007bff; }
-                    </style>
-                </head>
-                <body>
-                    <h1>Blog Page</h1>
-                    <div class="blog-container">
-            `;
-            posts.forEach(post => {
-                html += `
-                    <div class="blog-post">
-                        <h2>${post.title}</h2>
-                        <p>${post.content}</p>
-                    </div>
-                `;
-            });
-            html += `</div></body></html>`;
-            res.send(html);
+            res.json(posts); // Send JSON data
         } catch (parseError) {
-            console.error("Error parsing blog data:", parseError);
-            res.status(500).send("Error parsing blog data.");
+            console.error("❌ Error parsing blog data:", parseError);
+            res.status(500).json({ error: "Error parsing blog data." });
         }
     });
 });
 
+// Handle 404 - Page Not Found
+app.use((req, res) => {
+    res.status(404).send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>404 - Not Found</title>
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                h1 { color: red; }
+                a { text-decoration: none; color: #007bff; }
+            </style>
+        </head>
+        <body>
+            <h1>404 - Page Not Found</h1>
+            <p>Sorry, the page you are looking for does not exist.</p>
+            <a href="/">Go Back Home</a>
+        </body>
+        </html>
+    `);
+});
+
+// Start Server
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`✅ Server running at http://localhost:${PORT}`);
 });
