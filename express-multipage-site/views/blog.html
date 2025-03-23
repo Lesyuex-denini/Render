@@ -5,14 +5,13 @@
     <meta charset="UTF-8">
     <title>Blog</title>
     <script>
-        // Wait for DOMContentLoaded to ensure the DOM is ready
-        document.addEventListener('DOMContentLoaded', async function () {
+        async function loadBlogPosts() {
             try {
                 let response = await fetch('/blog-posts'); // Fetch JSON data
                 let posts = await response.json();
 
                 let container = document.getElementById('blog-container');
-                container.innerHTML = ""; // Clear previous content
+                container.innerHTML = "";
 
                 posts.forEach(post => {
                     let postElement = document.createElement('div');
@@ -25,21 +24,13 @@
                 console.error("Error loading blog posts:", error);
                 document.getElementById('blog-container').innerHTML = "<p>Error loading posts.</p>";
             }
-        });
+        }
+        window.onload = loadBlogPosts;
     </script>
 
-    <style>
-        .blog-post {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
 
-        .blog-post h2 {
-            color: #007bff;
-        }
-    </style>
+    <link rel="stylesheet" href="/style.css">
+
 </head>
 
 <body>
